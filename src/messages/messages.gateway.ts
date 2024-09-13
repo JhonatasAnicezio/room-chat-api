@@ -20,17 +20,23 @@ export class MessagesGateway {
     client.join('sala'); // Cliente entra na sala 'sala'
   }
 
-  // constructor(private readonly messagesService: MessagesService) {}
+  constructor(private readonly messagesService: MessagesService) {}
 
   @SubscribeMessage('start-chat')
-  startChat(@ConnectedSocket() client: Socket) {
+  async startChat(@ConnectedSocket() client: Socket) {
     client.emit('message',  this.listMessage);
+
+    const messages = await this.messagesService.getAllMessages();
+
+    this.server.to('sala').emit('message', messages);
   }
 
   @SubscribeMessage('send-message')
-  sendMessage(@MessageBody() createMessageDto: CreateMessageDto) {
-    this.listMessage.unshift(createMessageDto);
+  async sendMessage(@MessageBody() createMessageDto: CreateMessageDto) {
+    await this.messagesService.sendMessage(createMessageDto);
 
-    this.server.to('sala').emit('message', this.listMessage);
+    const messages = await this.messagesService.getAllMessages();
+
+    this.server.to('sala').emit('message', messages);
   }
 }
