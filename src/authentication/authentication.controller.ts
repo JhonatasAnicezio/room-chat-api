@@ -14,6 +14,6 @@ export class AuthenticationController {
 
   @Post('sing-in')
   async singIn(@Body() { email, password }: signInDto) {
-    await this.authenticationService.signIn({ email, password });
+    return await this.authenticationService.signIn({ email, password });
   }
 }
