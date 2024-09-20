@@ -2,6 +2,8 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { RegisterDto } from './dto/register-dto';
 import { auth } from 'src/firebase/firebase-config';
 import { AuthError, AuthErrorCodes, createUserWithEmailAndPassword, sendEmailVerification, signInWithCustomToken, signInWithEmailAndPassword, UserCredential } from 'firebase/auth';
+import { signInDto } from './dto/sign-in-dto';
+import { signInTokenDto } from './dto/sign-in-token-dto';
 
 @Injectable()
 export class AuthenticationService {
@@ -15,7 +17,7 @@ export class AuthenticationService {
             })
     }
 
-    async signIn({ email, password }: { email: string, password: string }) {
+    async signIn({ email, password }: signInDto) {
         return await signInWithEmailAndPassword(auth, email, password)
             .then(({ user }: UserCredential) => {
                 if (!user.emailVerified) {
@@ -33,7 +35,7 @@ export class AuthenticationService {
             });
     }
 
-    async signInToken({ token }: { token: string }) {
+    async signInToken({ token }: signInTokenDto) {
         return await signInWithCustomToken(auth, token)
             .then(({ user }: UserCredential) => {
                 return {
