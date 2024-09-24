@@ -16,9 +16,4 @@ export class AuthenticationController {
   async singIn(@Body() { email, password }: signInDto) {
     return await this.authenticationService.signIn({ email, password });
   }
-
-  @Post('sing-in/token')
-  async singInToken(@Body() { token }: { token: string }) {
-    return await this.authenticationService.signInToken({ token });
-  }
 }
