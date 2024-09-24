@@ -8,8 +8,8 @@ export class AuthenticationController {
   constructor(private readonly authenticationService: AuthenticationService) { }
 
   @Post()
-  async register(@Body() { email, password, name, photoURL }: RegisterDto) {
-    await this.authenticationService.register({ email, password, name, photoURL });
+  async register(@Body() { email, password }: RegisterDto) {
+    await this.authenticationService.register({ email, password });
   }
 
   @Post('sing-in')

@@ -11,14 +11,9 @@ export class AuthenticationService {
         private readonly jwtService: JwtService,
     ) {}
 
-    async register({ email, password, name, photoURL }: RegisterDto) {
+    async register({ email, password }: RegisterDto) {
         return await createUserWithEmailAndPassword(auth, email, password)
             .then((userCredential: UserCredential) => {
-                updateProfile(auth.currentUser, {
-                    displayName: name,
-                    photoURL: photoURL,
-                });
-
                 sendEmailVerification(auth.currentUser);
             })
             .catch((error: AuthError) => {
