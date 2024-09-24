@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Post, Put } from '@nestjs/common';
 import { AuthenticationService } from './authentication.service';
 import { RegisterDto } from './dto/register-dto';
 import { signInDto } from './dto/sign-in-dto';
@@ -20,5 +20,10 @@ export class AuthenticationController {
   @Post('sing-in/token')
   async singInWithToken(@Body() { token }: { token: string }) {
     return await this.authenticationService.signInWithToken({ token });
+  }
+
+  @Put('displayName')
+  async registerName(@Body() { name }: { name: string }) {
+    return await this.authenticationService.registerName({ name });
   }
 }

@@ -9,7 +9,7 @@ import { JwtService } from '@nestjs/jwt';
 export class AuthenticationService {
     constructor(
         private readonly jwtService: JwtService,
-    ) {}
+    ) { }
 
     async register({ email, password }: RegisterDto) {
         return await createUserWithEmailAndPassword(auth, email, password)
@@ -47,5 +47,14 @@ export class AuthenticationService {
         const { email, password }: signInDto = await this.jwtService.decode(token);
 
         return await this.signIn({ email, password });
+    }
+
+    async registerName({ name }: { name: string }) {
+        return await updateProfile(auth.currentUser, {
+            displayName: name
+        })
+        .catch((error: AuthError) => {
+            throw new UnauthorizedException(error.message);
+        })
     }
 }
