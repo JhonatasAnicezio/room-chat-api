@@ -3,9 +3,14 @@ import { RegisterDto } from './dto/register-dto';
 import { auth } from 'src/firebase/firebase-config';
 import { AuthError, AuthErrorCodes, createUserWithEmailAndPassword, sendEmailVerification, signInWithEmailAndPassword, updateProfile, UserCredential } from 'firebase/auth';
 import { signInDto } from './dto/sign-in-dto';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthenticationService {
+    constructor(
+        private readonly jwtService: JwtService,
+    ) {}
+
     async register({ email, password, name, photoURL }: RegisterDto) {
         return await createUserWithEmailAndPassword(auth, email, password)
             .then((userCredential: UserCredential) => {
@@ -23,16 +28,18 @@ export class AuthenticationService {
 
     async signIn({ email, password }: signInDto) {
         return await signInWithEmailAndPassword(auth, email, password)
-            .then(({ user }: UserCredential) => {
+            .then(async ({ user }: UserCredential) => {
                 if (!user.emailVerified) {
                     // Lança uma exceção se o e-mail não estiver verificado
                     throw new UnauthorizedException(AuthErrorCodes.UNVERIFIED_EMAIL);
                 }
 
-                console.log(user);
+                const payload = { email, password };
+
+                const token = await this.jwtService.signAsync(payload);
 
                 return {
-                    token: user.refreshToken,
+                    token,
                     user: user.providerData,
                 };
             })
