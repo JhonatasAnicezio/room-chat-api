@@ -38,6 +38,7 @@ export class AuthenticationService {
 
                 const token = await this.jwtService.signAsync(payload);
 
+                console.log(token)
                 return {
                     token,
                     user: user.providerData,
@@ -46,5 +47,11 @@ export class AuthenticationService {
             .catch((error: AuthError) => {
                 throw new UnauthorizedException(error.message);
             });
+    }
+
+    async signInWithToken({ token }: { token: string }) {
+        const { email, password }: signInDto = await this.jwtService.decode(token);
+
+        return await this.signIn({ email, password });
     }
 }
