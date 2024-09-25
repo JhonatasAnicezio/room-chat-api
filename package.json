@@ -30,6 +30,7 @@
     "@nestjs/platform-socket.io": "^10.4.1",
     "@nestjs/websockets": "^10.4.1",
     "@types/socket.io": "^3.0.2",
+    "class-validator": "^0.14.1",
     "firebase": "^10.13.1",
     "mongoose": "^8.6.2",
     "reflect-metadata": "^0.2.0",
