@@ -22,7 +22,7 @@ export class AuthenticationController {
     return await this.authenticationService.signInWithToken({ token });
   }
 
-  @Put('displayName')
+  @Put('display-name')
   async registerName(@Body() { name }: { name: string }) {
     return await this.authenticationService.registerName({ name });
   }
