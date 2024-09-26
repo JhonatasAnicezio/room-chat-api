@@ -4,6 +4,7 @@ import { AppService } from './app.service';
 import { MessagesModule } from './messages/messages.module';
 import { ConfigModule } from '@nestjs/config';
 import { AuthenticationModule } from './authentication/authentication.module';
+import { RoomModule } from './room/room.module';
 
 @Module({
   imports: [
@@ -12,6 +13,7 @@ import { AuthenticationModule } from './authentication/authentication.module';
       isGlobal: true, // Faz com que as variáveis estejam disponíveis globalmente
     }),
     AuthenticationModule,
+    RoomModule,
   ],
   controllers: [AppController],
   providers: [AppService],
