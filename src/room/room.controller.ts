@@ -3,16 +3,19 @@ import { RoomService } from './room.service';
 import { CreateRoomDto } from './dto/create-room.dto';
 import { UpdateRoomSubjectDto } from './dto/update-room-subject.dto';
 import { UpdateRoomNameDto } from './dto/update-name-room.dto';
-import { ValidationFieldsCreateRoomPipe } from './common/pipes/validation-fields-create-room.pipe';
+import { ValidationSubjectRoomPipe } from './common/pipes/validation-subject-room.pipe';
 
 @UsePipes(ValidationPipe)
 @Controller('room')
 export class RoomController {
-  constructor(private readonly roomService: RoomService) {}
+  constructor(private readonly roomService: RoomService) { }
 
   @Post()
-  create(@Body(ValidationFieldsCreateRoomPipe) createRoomDto: CreateRoomDto) {
-    return this.roomService.create(createRoomDto);
+  create(
+    @Body() createRoomDto: CreateRoomDto,
+    @Body('subject', ValidationSubjectRoomPipe) subject: string[],
+  ) {
+    return this.roomService.create({ ...createRoomDto, subject });
   }
 
   @Get()
@@ -26,8 +29,12 @@ export class RoomController {
   }
 
   @Patch(':id')
-  updateSubject(@Param('id') id: string, @Body() updateRoomSubjectDto: UpdateRoomSubjectDto) {
-    return this.roomService.updateSubject(id, updateRoomSubjectDto);
+  updateSubject(
+    @Param('id') id: string,
+    @Body() updateRoomSubjectDto: UpdateRoomSubjectDto,
+    @Body('subject', ValidationSubjectRoomPipe) subject: string[],
+  ) {
+    return this.roomService.updateSubject(id, { subject });
   }
 
   @Patch(':id')
