@@ -1,4 +1,4 @@
-import { IsString, ArrayMaxSize, IsArray, ArrayNotEmpty, IsNotEmpty } from 'class-validator';
+import { IsString, ArrayMaxSize, IsArray, ArrayNotEmpty, IsOptional } from 'class-validator';
 import { Message } from 'src/messages/interfaces/message.interface';
 
 export class CreateRoomDto {
@@ -6,12 +6,13 @@ export class CreateRoomDto {
   name: string;
 
   @IsArray()
-  @ArrayNotEmpty() // Garante que o array não esteja vazio
-  @ArrayMaxSize(3) // Limita o array a no máximo 3 itens
+  @ArrayNotEmpty()
+  @ArrayMaxSize(3)
   subject: string[];
 
+  @IsOptional() // Permite que o campo seja opcional
   @IsString()
-  imgUrl: string;
+  imgUrl: string | null;
 
   @IsString()
   idAuthor: String;

@@ -1,15 +1,17 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ValidationPipe, UsePipes } from '@nestjs/common';
 import { RoomService } from './room.service';
 import { CreateRoomDto } from './dto/create-room.dto';
 import { UpdateRoomSubjectDto } from './dto/update-room-subject.dto';
 import { UpdateRoomNameDto } from './dto/update-name-room.dto';
+import { ValidationFieldsCreateRoomPipe } from './common/pipes/validation-fields-create-room.pipe';
 
+@UsePipes(ValidationPipe)
 @Controller('room')
 export class RoomController {
   constructor(private readonly roomService: RoomService) {}
 
   @Post()
-  create(@Body() createRoomDto: CreateRoomDto) {
+  create(@Body(ValidationFieldsCreateRoomPipe) createRoomDto: CreateRoomDto) {
     return this.roomService.create(createRoomDto);
   }
 
