@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 import { CreateRoomDto } from './dto/create-room.dto';
 import { UpdateRoomSubjectDto } from './dto/update-room-subject.dto';
 import { Model } from 'mongoose';
@@ -13,14 +13,16 @@ export class RoomService {
   ) {}
   
   async create(createRoomDto: CreateRoomDto) {
-    const { name } = createRoomDto;
+    const { name, idAuthor } = createRoomDto;
     const rooms = await this.roomModel.find().exec();
     
     const findName = rooms.find((room) => room.name === name);
+    const authorRoom = rooms.filter((room) => room.idAuthor === idAuthor);
     
-    if(findName) {
-      return 'nome ja criado';
-    }
+    if(findName) throw new UnauthorizedException('Nome ja criado');
+
+    if(authorRoom.length === 2) throw new UnauthorizedException('Você não pode criar mais que duas salas');
+
     return await this.roomModel.create(createRoomDto);
   }
   
