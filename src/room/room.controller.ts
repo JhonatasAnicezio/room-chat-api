@@ -1,9 +1,11 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, ValidationPipe, UsePipes } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ValidationPipe, UsePipes, UseGuards, Req } from '@nestjs/common';
 import { RoomService } from './room.service';
 import { CreateRoomDto } from './dto/create-room.dto';
 import { UpdateRoomSubjectDto } from './dto/update-room-subject.dto';
 import { UpdateRoomNameDto } from './dto/update-name-room.dto';
 import { ValidationSubjectRoomPipe } from './common/pipes/validation-subject-room.pipe';
+import { RoomGuard } from './room.guard';
+import { Request } from 'express';
 
 @UsePipes(ValidationPipe)
 @Controller('room')
@@ -11,11 +13,19 @@ export class RoomController {
   constructor(private readonly roomService: RoomService) { }
 
   @Post()
+  @UseGuards(RoomGuard)
   create(
     @Body() createRoomDto: CreateRoomDto,
     @Body('subject', ValidationSubjectRoomPipe) subject: string[],
+    @Req() req: Request,
   ) {
-    return this.roomService.create({ ...createRoomDto, subject });
+    const userId: string = req['userId'];
+
+    return this.roomService.create({
+      ...createRoomDto,
+      idAuthor: userId,
+      subject
+    });
   }
 
   @Get()
@@ -24,26 +34,43 @@ export class RoomController {
   }
 
   @Get(':id')
+  @UseGuards(RoomGuard)
   findOne(@Param('id') id: string) {
     return this.roomService.findOne(id);
   }
 
   @Patch(':id')
+  @UseGuards(RoomGuard)
   updateSubject(
     @Param('id') id: string,
     @Body() updateRoomSubjectDto: UpdateRoomSubjectDto,
     @Body('subject', ValidationSubjectRoomPipe) subject: string[],
+    @Req() req: Request,
   ) {
-    return this.roomService.updateSubject(id, { subject });
+    const userId: string = req['userId'];
+
+    return this.roomService.updateSubject(id, { subject, idAuthor: userId });
   }
 
   @Patch(':id')
-  updateName(@Param('id') id: string, @Body() updateRoomNameDto: UpdateRoomNameDto) {
-    return this.roomService.updateName(id, updateRoomNameDto);
+  @UseGuards(RoomGuard)
+  updateName(
+    @Param('id') id: string, @Body() { name }: UpdateRoomNameDto,
+    @Req() req: Request,
+  ) {
+    const userId: string = req['userId'];
+
+    return this.roomService.updateName(id, { name, idAuthor: userId });
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.roomService.remove(id);
+  @UseGuards(RoomGuard)
+  remove(
+    @Param('id') id: string,
+    @Req() req: Request,
+  ) {
+    const userId: string = req['userId'];
+
+    return this.roomService.remove(id, userId);
   }
 }

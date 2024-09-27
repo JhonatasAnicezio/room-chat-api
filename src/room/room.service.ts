@@ -1,4 +1,4 @@
-import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 import { CreateRoomDto } from './dto/create-room.dto';
 import { UpdateRoomSubjectDto } from './dto/update-room-subject.dto';
 import { Model } from 'mongoose';
@@ -31,29 +31,58 @@ export class RoomService {
   }
   
   async findOne(id: string) {
-    return await this.roomModel.findById(id);
+    try {
+      return await this.roomModel.findById(id);
+    } catch (error) {
+      throw new BadRequestException('Sala não encontrada')
+    }
   }
   
-  async updateSubject(id: string, { subject }: UpdateRoomSubjectDto) {
+  async updateSubject(id: string, { subject, idAuthor }: UpdateRoomSubjectDto) {
     const isRoom = await this.roomModel.findById(id);
 
     if(!isRoom) {
-      return 'Sala não encontrada'
+      throw new BadRequestException('Sala não econtrada');
     }
+
+    if(isRoom.idAuthor !== idAuthor) {
+      throw new UnauthorizedException('Você não tem permissão')
+    }
+
     return await this.roomModel.updateOne(
       { _id: id },
       { $set: { subject }
     });
   }
 
-  async updateName(id: string, { name }: UpdateRoomNameDto) {
+  async updateName(id: string, { name, idAuthor }: UpdateRoomNameDto) {
+    const isRoom = await this.roomModel.findById(id);
+
+    if(!isRoom) {
+      throw new BadRequestException('Sala não econtrada');
+    }
+
+    if(isRoom.idAuthor !== idAuthor) {
+      throw new UnauthorizedException('Você não tem permissão')
+    }
+
     return await this.roomModel.updateOne(
       { _id: id },
       { $set: { name } }
     )
   }
   
-  async remove(id: string) {
+  async remove(id: string, idAuthor: string) {
+    const isRoom = await this.roomModel.findById(id);
+
+    if(!isRoom) {
+      throw new BadRequestException('Sala não econtrada');
+    }
+
+    if(isRoom.idAuthor !== idAuthor) {
+      throw new UnauthorizedException('Você não tem permissão')
+    }
+
     return await this.roomModel.deleteOne({ _id: id });
   }
 }
