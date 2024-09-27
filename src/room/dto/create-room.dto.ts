@@ -16,6 +16,7 @@ export class CreateRoomDto {
   @IsString()
   imgUrl: string | null;
 
+  @IsOptional()
   @IsString()
   idAuthor: String;
 
