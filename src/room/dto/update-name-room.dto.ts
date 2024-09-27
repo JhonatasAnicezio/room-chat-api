@@ -1,4 +1,4 @@
-import { IsString, MaxLength, MinLength } from "class-validator";
+import { IsOptional, IsString, MaxLength, MinLength } from "class-validator";
 
 
 export class UpdateRoomNameDto {
@@ -6,4 +6,8 @@ export class UpdateRoomNameDto {
     @MinLength(4)
     @MaxLength(15)
     name: string;
+
+    @IsOptional()
+    @IsString()
+    idAuthor: String;
 }
