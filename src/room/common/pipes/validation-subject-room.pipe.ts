@@ -3,7 +3,7 @@ import { Injectable, PipeTransform, UnauthorizedException } from "@nestjs/common
 @Injectable()
 export class ValidationSubjectRoomPipe implements PipeTransform {
     transform(subject: string[]) {
-        const subjects = subject.find((e) => e.length < 3 || e.length > 8);
+        const subjects = subject.find((e) => e.length < 3 || e.length > 20);
 
         if(subject.length === 0) throw new UnauthorizedException('Falta um thema para sala');
 
