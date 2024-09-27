@@ -1,15 +1,28 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { RegisterDto } from './dto/register-dto';
 import { auth } from 'src/firebase/firebase-config';
 import { AuthError, AuthErrorCodes, createUserWithEmailAndPassword, sendEmailVerification, signInWithEmailAndPassword, updateProfile, UserCredential } from 'firebase/auth';
 import { signInDto } from './dto/sign-in-dto';
-import { JwtService } from '@nestjs/jwt';
+import { ImportJsonService } from 'src/common/import-json.service';
+import * as admin from 'firebase-admin';
 
 @Injectable()
 export class AuthenticationService {
     constructor(
-        private readonly jwtService: JwtService,
-    ) { }
+        private readonly importJsonService: ImportJsonService,
+    ) { 
+        this.initializeFirebase();
+    }
+
+    private async initializeFirebase() {
+        if (!admin.apps.length) {
+            const data = await this.importJsonService.importLocalJsonFile();
+
+            admin.initializeApp({
+                credential: admin.credential.cert(data),
+            });
+        }
+    }
 
     async register({ email, password }: RegisterDto) {
         return await createUserWithEmailAndPassword(auth, email, password)
@@ -29,14 +42,9 @@ export class AuthenticationService {
                     throw new UnauthorizedException(AuthErrorCodes.UNVERIFIED_EMAIL);
                 }
 
-                const payload = { email, password };
+                const token = await user.getIdToken();
 
-                const token = await this.jwtService.signAsync(payload);
-
-                return {
-                    token,
-                    user: user.providerData,
-                };
+                return token;
             })
             .catch((error: AuthError) => {
                 throw new UnauthorizedException(error.message);
@@ -44,9 +52,10 @@ export class AuthenticationService {
     }
 
     async signInWithToken({ token }: { token: string }) {
-        const { email, password }: signInDto = await this.jwtService.decode(token);
-
-        return await this.signIn({ email, password });
+        return await admin.auth().verifyIdToken(token)
+            .catch((error: AuthError) => {
+                throw new BadRequestException(error.message);
+            });
     }
 
     async registerName({ name }: { name: string }) {

@@ -1,17 +1,13 @@
 import { Module } from '@nestjs/common';
 import { AuthenticationService } from './authentication.service';
 import { AuthenticationController } from './authentication.controller';
-import { JwtModule } from '@nestjs/jwt';
+import { ImportJsonService } from 'src/common/import-json.service';
 
 @Module({
-  imports: [
-    JwtModule.register({
-      global: true,
-      secret: `${process.env.SECRET}`,
-      signOptions: { expiresIn: '72h' },
-    })
-  ],
   controllers: [AuthenticationController],
-  providers: [AuthenticationService],
+  providers: [
+    AuthenticationService,
+    ImportJsonService,
+  ],
 })
 export class AuthenticationModule {}
