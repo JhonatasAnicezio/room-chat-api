@@ -23,7 +23,7 @@ export class RoomService {
 
     if(authorRoom.length === 2) throw new UnauthorizedException('Você não pode criar mais que duas salas');
 
-    return await this.roomModel.create(createRoomDto);
+    return await this.roomModel.create({ ...createRoomDto, messages: [] });
   }
   
   async findAll() {
@@ -38,7 +38,7 @@ export class RoomService {
     }
   }
   
-  async updateSubject(id: string, { subject, idAuthor }: UpdateRoomSubjectDto) {
+  async updateSubject(id: string, { subjects, idAuthor }: UpdateRoomSubjectDto) {
     const isRoom = await this.roomModel.findById(id);
 
     if(!isRoom) {
@@ -51,7 +51,7 @@ export class RoomService {
 
     return await this.roomModel.updateOne(
       { _id: id },
-      { $set: { subject }
+      { $set: { subjects }
     });
   }
 

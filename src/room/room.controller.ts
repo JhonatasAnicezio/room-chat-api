@@ -16,7 +16,7 @@ export class RoomController {
   @UseGuards(RoomGuard)
   create(
     @Body() createRoomDto: CreateRoomDto,
-    @Body('subject', ValidationSubjectRoomPipe) subject: string[],
+    @Body('subjects', ValidationSubjectRoomPipe) subjects: string[],
     @Req() req: Request,
   ) {
     const userId: string = req['userId'];
@@ -24,7 +24,7 @@ export class RoomController {
     return this.roomService.create({
       ...createRoomDto,
       idAuthor: userId,
-      subject
+      subjects
     });
   }
 
@@ -44,12 +44,12 @@ export class RoomController {
   updateSubject(
     @Param('id') id: string,
     @Body() updateRoomSubjectDto: UpdateRoomSubjectDto,
-    @Body('subject', ValidationSubjectRoomPipe) subject: string[],
+    @Body('subjects', ValidationSubjectRoomPipe) subjects: string[],
     @Req() req: Request,
   ) {
     const userId: string = req['userId'];
 
-    return this.roomService.updateSubject(id, { subject, idAuthor: userId });
+    return this.roomService.updateSubject(id, { subjects, idAuthor: userId });
   }
 
   @Patch(':id')

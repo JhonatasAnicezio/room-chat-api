@@ -1,5 +1,4 @@
 import { IsString, ArrayMaxSize, IsArray, ArrayNotEmpty, IsOptional, MaxLength, MinLength } from 'class-validator';
-import { Message } from 'src/messages/interfaces/message.interface';
 
 export class CreateRoomDto {
   @IsString()
@@ -10,7 +9,7 @@ export class CreateRoomDto {
   @IsArray()
   @ArrayNotEmpty()
   @ArrayMaxSize(3)
-  subject: string[];
+  subjects: string[];
 
   @IsOptional() // Permite que o campo seja opcional
   @IsString()
@@ -19,7 +18,4 @@ export class CreateRoomDto {
   @IsOptional()
   @IsString()
   idAuthor: String;
-
-  @IsArray()
-  message: Message[];
 }

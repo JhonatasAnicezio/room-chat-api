@@ -8,7 +8,7 @@ export class Room extends Document {
     name: String;
 
     @Prop({ required: true })
-    subject: String[];
+    subjects: String[];
 
     @Prop()
     imgUrl: String;
