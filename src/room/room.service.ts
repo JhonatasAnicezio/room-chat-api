@@ -23,7 +23,12 @@ export class RoomService {
 
     if(authorRoom.length === 2) throw new UnauthorizedException('Você não pode criar mais que duas salas');
 
-    return await this.roomModel.create({ ...createRoomDto, messages: [] });
+    try {
+      
+      return await this.roomModel.create({ ...createRoomDto, messages: [] });
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
   }
   
   async findAll() {
