@@ -37,7 +37,7 @@ export class RoomService {
   
   async findOne(id: string) {
     try {
-      return await this.roomModel.findById(id);
+      return await this.roomModel.findById(id).exec();
     } catch (error) {
       throw new BadRequestException('Sala não encontrada')
     }
