@@ -11,5 +11,8 @@ export class Message extends Document {
 
     @Prop({ required: true })
     author: String;
+
+    @Prop({ required: true })
+    idAuthor: String;
 }
 export const MessageSchema = SchemaFactory.createForClass(Message);
