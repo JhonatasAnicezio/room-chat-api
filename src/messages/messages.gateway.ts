@@ -13,30 +13,30 @@ export class MessagesGateway {
   @WebSocketServer()
   server: Server;
 
-  private listMessage: Message[] = [];
-
   handleConnection(client: Socket) {
     console.log(`Conectou ao socket ${client.id}`);
-    client.join('sala'); // Cliente entra na sala 'sala'
   }
 
-  constructor(private readonly messagesService: MessagesService) {}
+  constructor(private readonly messagesService: MessagesService) { }
 
   @SubscribeMessage('start-chat')
-  async startChat(@ConnectedSocket() client: Socket) {
-    client.emit('message',  this.listMessage);
+  async startChat(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() room: string
+  ) {
+    client.join(room); // Cliente entra na sala 'sala'
 
-    const messages = await this.messagesService.getAllMessages();
+    const messages = await this.messagesService.getAllMessages({ id: room });
 
-    this.server.to('sala').emit('message', messages);
+    this.server.to(room).emit('message', messages);
   }
 
   @SubscribeMessage('send-message')
   async sendMessage(@MessageBody() createMessageDto: CreateMessageDto) {
     await this.messagesService.sendMessage(createMessageDto);
 
-    const messages = await this.messagesService.getAllMessages();
+    const messages = await this.messagesService.getAllMessages({ id: createMessageDto.id });
 
-    this.server.to('sala').emit('message', messages);
+    this.server.to(createMessageDto.id).emit('message', messages);
   }
 }

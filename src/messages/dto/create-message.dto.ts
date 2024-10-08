@@ -1,4 +1,9 @@
 export class CreateMessageDto {
-    text: string;
-    author: string;
+    newMessage: {
+        text: string;
+        author: string;
+        idAuthor: string;
+        createAt: Date;
+    };
+    id: string;
 }

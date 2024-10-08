@@ -1,10 +1,10 @@
 import { Connection } from "mongoose";
-import { MessageSchema } from "src/database/schemas/message.schema";
+import { RoomSchema } from "src/database/schemas/room.schema";
 
-export const messagesProviders = [
+export const roomProviders = [
     {
-        provide: 'MESSAGE_MODEL',
-        useFactory: (connection: Connection) => connection.model('messages', MessageSchema),
+        provide: 'ROOM_MODEL',
+        useFactory: (connection: Connection) => connection.model('room', RoomSchema),
         inject: ['DATABASE_CONNECTION'],
     },
 ];
