@@ -10,7 +10,7 @@ import * as admin from 'firebase-admin';
 export class AuthenticationService {
     constructor(
         private readonly importJsonService: ImportJsonService,
-    ) { 
+    ) {
         this.initializeFirebase();
     }
 
@@ -53,17 +53,31 @@ export class AuthenticationService {
 
     async signInWithToken({ token }: { token: string }) {
         return await admin.auth().verifyIdToken(token)
+            .then(async (decodedToken) => {
+                const userRecord = await admin.auth().getUser(decodedToken.uid);
+
+                return {
+                    uid: userRecord.uid,
+                    email: userRecord.email,
+                    name: userRecord.displayName,
+                    photoURL: userRecord.photoURL,
+                    email_verified: userRecord.emailVerified,
+                };
+            })
             .catch((error: AuthError) => {
                 throw new BadRequestException(error.message);
             });
     }
 
-    async registerName({ name }: { name: string }) {
-        return await updateProfile(auth.currentUser, {
-            displayName: name
+    async registerProfile({ name, photoURL, token }: { name: string, photoURL: string, token: string }) {
+        const user = await admin.auth().verifyIdToken(token)
+
+        return await admin.auth().updateUser(user.uid, {
+            displayName: name, photoURL: photoURL,
         })
-        .catch((error: AuthError) => {
-            throw new UnauthorizedException(error.message);
-        })
+            .catch((error: AuthError) => {
+                console.log(error);
+                throw new UnauthorizedException(error.message);
+            })
     }
 }
