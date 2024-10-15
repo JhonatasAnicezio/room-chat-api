@@ -1,15 +1,16 @@
 import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { RegisterDto } from './dto/register-dto';
-import { auth } from 'src/firebase/firebase-config';
-import { AuthError, AuthErrorCodes, createUserWithEmailAndPassword, sendEmailVerification, signInWithEmailAndPassword, updateProfile, UserCredential } from 'firebase/auth';
+import { AuthError, AuthErrorCodes, createUserWithEmailAndPassword, sendEmailVerification, signInWithEmailAndPassword, UserCredential } from 'firebase/auth';
 import { signInDto } from './dto/sign-in-dto';
 import { ImportJsonService } from 'src/common/import-json.service';
 import * as admin from 'firebase-admin';
+import { FirebaseService } from 'src/firebase/firebase.service';
 
 @Injectable()
 export class AuthenticationService {
     constructor(
         private readonly importJsonService: ImportJsonService,
+        private readonly firebaseService: FirebaseService,
     ) {
         this.initializeFirebase();
     }
@@ -25,9 +26,9 @@ export class AuthenticationService {
     }
 
     async register({ email, password }: RegisterDto) {
-        return await createUserWithEmailAndPassword(auth, email, password)
+        return await createUserWithEmailAndPassword(this.firebaseService.auth, email, password)
             .then((userCredential: UserCredential) => {
-                sendEmailVerification(auth.currentUser);
+                sendEmailVerification(this.firebaseService.auth.currentUser);
             })
             .catch((error: AuthError) => {
                 throw new UnauthorizedException(error.message);
@@ -35,7 +36,7 @@ export class AuthenticationService {
     }
 
     async signIn({ email, password }: signInDto) {
-        return await signInWithEmailAndPassword(auth, email, password)
+        return await signInWithEmailAndPassword(this.firebaseService.auth, email, password)
             .then(async ({ user }: UserCredential) => {
                 if (!user.emailVerified) {
                     // Lança uma exceção se o e-mail não estiver verificado

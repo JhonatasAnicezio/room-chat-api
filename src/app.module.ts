@@ -5,6 +5,7 @@ import { MessagesModule } from './messages/messages.module';
 import { ConfigModule } from '@nestjs/config';
 import { AuthenticationModule } from './authentication/authentication.module';
 import { RoomModule } from './room/room.module';
+import { FirebaseModule } from './firebase/firebase.module';
 
 @Module({
   imports: [
@@ -12,6 +13,7 @@ import { RoomModule } from './room/room.module';
     ConfigModule.forRoot({
       isGlobal: true, // Faz com que as variáveis estejam disponíveis globalmente
     }),
+    FirebaseModule,
     AuthenticationModule,
     RoomModule,
   ],
