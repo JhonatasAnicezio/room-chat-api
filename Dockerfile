@@ -1,8 +1,8 @@
 FROM node:22.2-alpine AS build
 
-WORKDIR /app
+WORKDIR /
 
-COPY package*.json /app
+COPY package*.json /
 
 RUN npm install
 
@@ -10,6 +10,6 @@ COPY . .
 
 RUN npm run build
 
-EXPOSE 8080
+EXPOSE 3001
 
 CMD ["npm", "start"]
