@@ -70,6 +70,163 @@ Adicione as seguintes variáveis de ambiente no seu arquivo `.env` para conectar
 
 Essas variáveis são necessárias para autenticação e armazenamento de dados entre o Firebase e o MongoDB.
 
+## Documentação da API
+
+### Autenticação
+
+#### Registro de um novo usuário
+
+```bash
+  POST /authentication
+
+  body: {
+    "email": "user@user.com",
+    "password": "secret_password"
+  }
+```
+| Parâmetro   | Tipo       | Descrição                                   |
+| :---------- | :--------- | :------------------------------------------ |
+| `authorization`      | `string` | **Obrigatório**. O token gerado pelo login ou register |
+
+#### Login do usuário
+```bash
+  POST /authentication/sign-in
+
+  body: {
+    "email": "user@user.com",
+    "password": "secret_password"
+  }
+```
+| Parâmetro   | Tipo       | Descrição                                   |
+| :---------- | :--------- | :------------------------------------------ |
+| `authorization`      | `string` | **Obrigatório**. O token gerado pelo login ou register |
+
+#### Login com token
+```bash
+  POST /authentication/sign-in/token
+
+  body: {
+    "token": "user_token"
+  }
+```
+| Parâmetro   | Tipo       | Descrição                                   |
+| :---------- | :--------- | :------------------------------------------ |
+| `token`      | `string` | **Obrigatório**. O token do usuário |
+
+#### Atualização de perfil
+```bash
+  PUT /authentication/update-profile
+
+  header: {
+    "authorization": "Bearer token",
+  }
+
+  body: {
+    "name": "User Name",
+    "photoURL": "https://link_da_foto.com"
+  }
+
+```
+| Parâmetro   | Tipo       | Descrição                                   |
+| :---------- | :--------- | :------------------------------------------ |
+| `authorization`      | `string` | **Obrigatório**. O token do usuário |
+| `name`      | `string` | **Obrigatório**. O nome do usuário |
+| `photoURL`      | `string` | **Obrigatório**. A URL da foto de perfil do usuário |
+
+### Gerenciamento de Salas
+
+#### Criação de uma nova sala
+
+```bash
+  POST /room
+
+  body: {
+    "name": "Room Name",
+    "subjects": ["subject1", "subject2"]
+  }
+```
+| Parâmetro   | Tipo       | Descrição                                   |
+| :---------- | :--------- | :------------------------------------------ |
+| `name`      | `string` | **Obrigatório**. O nome da sala |
+| `subjects`      | `array` | **Obrigatório**. Lista de assuntos da sala |
+
+#### Listar todas as salas
+
+```bash
+  GET /room
+```
+| Parâmetro   | Tipo       | Descrição                                   |
+| :---------- | :--------- | :------------------------------------------ |
+| `-`      | `-` | Retorna todas as salas disponíveis |
+
+#### Atualizar os assuntos de uma sala
+
+```bash
+  PATCH /room/${id}
+
+  body: {
+    "subjects": ["newSubject1", "newSubject2"]
+  }
+```
+| Parâmetro   | Tipo       | Descrição                                   |
+| :---------- | :--------- | :------------------------------------------ |
+| `id`      | `string` | **Obrigatório**.  O ID da sala |
+| `subjects`      | `array` | **Obrigatório**. Nova lista de assuntos da sala |
+
+#### Atualizar o nome de uma sala
+
+```bash
+  PATCH /room/${id}
+
+  body: {
+    "name": "New Room Name"
+  }
+```
+| Parâmetro   | Tipo       | Descrição                                   |
+| :---------- | :--------- | :------------------------------------------ |
+| `id`      | `string` | **Obrigatório**.  O ID da sala |
+| `name`      | `string` | **Obrigatório**. Novo nome da sala |
+
+#### Remover uma sala
+
+```bash
+  DELETE /room/${id}
+```
+| Parâmetro   | Tipo       | Descrição                                   |
+| :---------- | :--------- | :------------------------------------------ |
+| `id`      | `string` | **Obrigatório**.  O ID da sala |
+
+
+### WebSocket - Chat em tempo real
+
+#### Remover uma sala
+
+```bash
+Evento: start-chat
+
+data: {
+  "room": "room_id"
+}
+```
+| Parâmetro   | Tipo       | Descrição                                   |
+| :---------- | :--------- | :------------------------------------------ |
+| `id`      | `string` | **Obrigatório**.  O ID da sala |
+
+#### Remover uma sala
+
+```bash
+Evento: send-message
+
+data: {
+  "id": "room_id",
+  "message": "Sua mensagem aqui"
+}
+```
+| Parâmetro   | Tipo       | Descrição                                   |
+| :---------- | :--------- | :------------------------------------------ |
+| `id`      | `string` | **Obrigatório**.  O ID da sala |
+| `message`      | `string` | **Obrigatório**.  O conteúdo da mensagem |
+
 ## Autor
 
 - Portifolio - [jhonatas-anicezio](https://jhonatas-anicezio.vercel.app/)
