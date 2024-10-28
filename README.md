@@ -86,7 +86,8 @@ Essas variáveis são necessárias para autenticação e armazenamento de dados 
 ```
 | Parâmetro   | Tipo       | Descrição                                   |
 | :---------- | :--------- | :------------------------------------------ |
-| `authorization`      | `string` | **Obrigatório**. O token gerado pelo login ou register |
+| `email`      | `string` | **Obrigatório**. O email do usuário |
+| `password`      | `string` | **Obrigatório**.  A senha do usuário |
 
 #### Login do usuário
 ```bash
@@ -99,7 +100,8 @@ Essas variáveis são necessárias para autenticação e armazenamento de dados 
 ```
 | Parâmetro   | Tipo       | Descrição                                   |
 | :---------- | :--------- | :------------------------------------------ |
-| `authorization`      | `string` | **Obrigatório**. O token gerado pelo login ou register |
+| `email`      | `string` | **Obrigatório**. O email do usuário |
+| `password`      | `string` | **Obrigatório**.  A senha do usuário |
 
 #### Login com token
 ```bash
