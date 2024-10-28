@@ -199,7 +199,7 @@ Essas variáveis são necessárias para autenticação e armazenamento de dados 
 
 ### WebSocket - Chat em tempo real
 
-#### Remover uma sala
+#### Iniciar chat em uma sala
 
 ```bash
 Evento: start-chat
@@ -212,7 +212,7 @@ data: {
 | :---------- | :--------- | :------------------------------------------ |
 | `id`      | `string` | **Obrigatório**.  O ID da sala |
 
-#### Remover uma sala
+#### Enviar mensagem
 
 ```bash
 Evento: send-message
