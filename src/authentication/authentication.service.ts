@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { RegisterDto } from './dto/register-dto';
 import { AuthError, AuthErrorCodes, createUserWithEmailAndPassword, sendEmailVerification, signInWithEmailAndPassword, UserCredential } from 'firebase/auth';
 import { signInDto } from './dto/sign-in-dto';
@@ -72,13 +72,29 @@ export class AuthenticationService {
 
     async registerProfile({ name, photoURL, token }: { name: string, photoURL: string, token: string }) {
         const user = await admin.auth().verifyIdToken(token)
-
         return await admin.auth().updateUser(user.uid, {
             displayName: name, photoURL: photoURL,
         })
             .catch((error: AuthError) => {
-                console.log(error);
                 throw new UnauthorizedException(error.message);
             })
+    }
+
+    async deleteUser({ uid, token }: { uid: string, token: string }): Promise<void> {
+        try {
+            const user = await admin.auth().verifyIdToken(token);
+
+            if (!user) {
+                throw new NotFoundException(`User with UID ${uid} not found`);
+            }
+            
+            await admin.auth().deleteUser(uid);
+
+        } catch (error) {
+            if (error.code === 'auth/user-not-found') {
+                throw new NotFoundException(`User with UID ${uid} not found`);
+            }
+            throw new UnauthorizedException(error.message);
+        }
     }
 }

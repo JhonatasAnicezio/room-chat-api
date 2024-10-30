@@ -1,4 +1,4 @@
-import { Body, Controller, Headers, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Headers, Post, Put } from '@nestjs/common';
 import { AuthenticationService } from './authentication.service';
 import { RegisterDto } from './dto/register-dto';
 import { signInDto } from './dto/sign-in-dto';
@@ -30,5 +30,15 @@ export class AuthenticationController {
     const cleanToken = token?.replace('Bearer ', '');
 
     return await this.authenticationService.registerProfile({ name, photoURL, token: cleanToken });
+  }
+
+  @Delete()
+  async deleteUser(
+    @Body() { uid }: { uid: string },
+    @Headers('authorization') token: string,
+  ) {
+    const cleanToken = token?.replace('Bearer ', '');
+
+    return await this.authenticationService.deleteUser({ uid, token: cleanToken });
   }
 }
